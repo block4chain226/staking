@@ -44,5 +44,8 @@ contract Staking is Ownable{
     mapping(address=>uint[]) public positionsIdsByAddress;
     mapping(string=>int) public stakedTokens;
 
+    event AddToken(uint tokenId, address indexed _tokenAddress, string indexed _name,
+    string _symbol, uint _usdtPrice, uint indexed ethInUsdtPrice, uint apy);
+
     
 }
