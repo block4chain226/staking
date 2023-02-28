@@ -47,5 +47,24 @@ contract Staking is Ownable{
     event AddToken(uint tokenId, address indexed _tokenAddress, string indexed _name,
     string _symbol, uint _usdtPrice, uint indexed ethInUsdtPrice, uint apy);
 
+    constructor(uint _currentEtherPrice){
+        ethInUsdtPrice = _currentEtherPrice;
+       _transferOwnership(msg.sender);
+    }
+
+    function addToken(address _tokenAddress, string calldata _name, string calldata _symbol, uint _usdtPrice, uint _apy) external onlyOwner{
+        require(_tokenAddress!=address(0), "You can't add not existing token");
+        require(bytes(_name).length>0 && bytes(_symbol).length>0, "you did not enter name or symbol");
+        require(_usdtPrice>0, "price can't be 0");
+        _currentTokenIdCounter.increment();
+        uint tokenId = _currentTokenIdCounter.current();
+        _currentPositionId.increment();
+        Token memory newToken = Token(tokenId, _name, _symbol, _tokenAddress, _usdtPrice, _usdtPrice/ethInUsdtPrice, _apy);
+        tokenSymbols.push(_symbol);
+        tokens[_symbol] = newToken;
+        emit AddToken(tokenId, _tokenAddress, _name, _symbol, _usdtPrice, _usdtPrice/ethInUsdtPrice, _apy);
+    }
+
+
     
 }
