@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract Staking is Ownable{
     using Counters for Counters.Counter;
 
-    Counters.Counter private _currentTokenIdCounter;
-    Counters.Counter private _currentPositionId;
+    Counters.Counter private currentTokenIdCounter;
+    Counters.Counter private currentPositionId;
 
     uint public ethInUsdtPrice;
     uint public STAKINGFEE;
@@ -44,68 +44,72 @@ contract Staking is Ownable{
     mapping(address=>uint[]) public positionsIdsByAddress;
     mapping(string=>uint) public stakedTokens;
 
-    event AddToken(uint tokenId, address indexed _tokenAddress, string indexed _name,
-    string _symbol, uint _usdtPrice, uint indexed ethInUsdtPrice, uint apy);
+    event AddToken(uint tokenId, address indexed tokenAddress, string indexed name,
+    string symbol, uint usdtPrice, uint indexed ethInUsdtPrice, uint apy);
     event StakingTokens(uint indexed positionId, address indexed owner, uint stakingAmount, uint date);
 
-    constructor(uint _currentEtherPrice, uint _stakingFee){
-        require(_stakingFee>0, "staking fee can't be 0");
-        STAKINGFEE = _stakingFee;
-        ethInUsdtPrice = _currentEtherPrice;
-       _transferOwnership(msg.sender);
+    constructor(uint currentEtherPrice, uint stakingFee){
+        require(stakingFee>0, "staking fee can't be 0");
+        STAKINGFEE = stakingFee;
+        ethInUsdtPrice = currentEtherPrice;
+       transferOwnership(msg.sender);
     }
 
-    function addToken(address _tokenAddress, string calldata _name, string calldata _symbol, uint _usdtPrice, uint _apy) external onlyOwner{
-        require(_tokenAddress!=address(0), "You can't add not existing token");
-        require(bytes(_name).length>0 && bytes(_symbol).length>0, "you did not enter name or symbol");
-        require(_usdtPrice>0, "price can't be 0");
-        _currentTokenIdCounter.increment();
-        uint tokenId = _currentTokenIdCounter.current();
-        Token memory newToken = Token(tokenId, _name, _symbol, _tokenAddress, _usdtPrice, _usdtPrice/ethInUsdtPrice, _apy);
-        tokenSymbols.push(_symbol);
-        tokens[_symbol] = newToken;
-        emit AddToken(tokenId, _tokenAddress, _name, _symbol, _usdtPrice, _usdtPrice/ethInUsdtPrice, _apy);
+    function addToken(address tokenAddress, string calldata name, string calldata symbol, uint usdtPrice, uint apy) external onlyOwner{
+        require(tokenAddress!=address(0), "You can't add not existing token");
+        require(bytes(name).length>0 && bytes(symbol).length>0, "you did not enter name or symbol");
+        require(usdtPrice>0, "price can't be 0");
+        currentTokenIdCounter.increment();
+        uint tokenId = currentTokenIdCounter.current();
+        Token memory newToken = Token(tokenId, name, symbol, tokenAddress, usdtPrice, usdtPrice/ethInUsdtPrice, apy);
+        tokenSymbols.push(symbol);
+        tokens[symbol] = newToken;
+        emit AddToken(tokenId, tokenAddress, name, symbol, usdtPrice, usdtPrice/ethInUsdtPrice, apy);
     }
         /////
      function getTokensSymbols() public view returns(string[] memory){
         return tokenSymbols;
     }
 
-    function getToken(string calldata _symbol) public view returns(Token memory){
-        return tokens[_symbol];
+    function getToken(string calldata symbol) public view returns(Token memory){
+        return tokens[symbol];
     }
 
-    function stakeTokens(string calldata _symbol, uint _stakingAmount) public payable  {
+    function stakeTokens(string calldata symbol, uint stakingAmount) public payable  {
         require(msg.value==STAKINGFEE, "you must pay fee for staking");
-        require(_stakingAmount>0, "you can't stake 0 tokens");
-        require(tokens[_symbol].tokenId!=0, "you can't stake not existent token");
+        require(stakingAmount>0, "you can't stake 0 tokens");
+        require(tokens[symbol].tokenId!=0, "you can't stake not existent token");
 
-        address tokenAddress = tokens[_symbol].tokenAddress;
+        address tokenAddress = tokens[symbol].tokenAddress;
         uint userBalance = IERC20(tokenAddress).balanceOf(msg.sender);
-        require(userBalance>=_stakingAmount, "you have not enough tokens");
+        require(userBalance>=stakingAmount, "you have not enough tokens");
 
-        IERC20(tokenAddress).approve(address(this), _stakingAmount);
-        IERC20(tokenAddress).transferFrom(msg.sender, address(this), _stakingAmount);
+        IERC20(tokenAddress).approve(address(this), stakingAmount);
+        IERC20(tokenAddress).transferFrom(msg.sender, address(this), stakingAmount);
         
-        positions[_currentPositionId.current()] = Position(
-            _currentPositionId.current(),
+        positions[currentPositionId.current()] = Position(
+            currentPositionId.current(),
             msg.sender,
-            tokens[_symbol].tokenName, 
-            tokens[_symbol].tokenSymbol,
+            tokens[symbol].tokenName, 
+            tokens[symbol].tokenSymbol,
             block.timestamp,
-            tokens[_symbol].apy,
-            _stakingAmount,
-            tokens[_symbol].usdtPrice * _stakingAmount,
-            (tokens[_symbol].ethPrice * _stakingAmount) / ethInUsdtPrice,
+            tokens[symbol].apy,
+            stakingAmount,
+            tokens[symbol].usdtPrice * stakingAmount,
+            (tokens[symbol].ethPrice * stakingAmount) / ethInUsdtPrice,
             true);
-            positionsIdsByAddress[msg.sender].push(_currentPositionId.current());
-            stakedTokens[_symbol]+=_stakingAmount;
-            emit StakingTokens(_currentPositionId.current(), msg.sender, _stakingAmount, block.timestamp);
-            _currentPositionId.increment();
+            positionsIdsByAddress[msg.sender].push(currentPositionId.current());
+            stakedTokens[symbol]+=stakingAmount;
+            emit StakingTokens(currentPositionId.current(), msg.sender, stakingAmount, block.timestamp);
+            currentPositionId.increment();
     }
 
-    function getPositionsIdsByAddress(address _user) public view returns(uint[] memory){
-        return positionsIdsByAddress[_user];
+    function getPositionsIdsByAddress(address user) external view returns(uint[] memory){
+        return positionsIdsByAddress[user];
+    }
+
+    function getPositionById(uint positionid) external view returns(Position memory){
+        return positions[positionid];
     }
 
 
