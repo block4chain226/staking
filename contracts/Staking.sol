@@ -104,6 +104,10 @@ contract Staking is Ownable{
             _currentPositionId.increment();
     }
 
+    function getPositionsIdsByAddress(address _user) public view returns(uint[] memory){
+        return positionsIdsByAddress[_user];
+    }
+
 
 
     
