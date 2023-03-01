@@ -4,6 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./Zil.sol";
 
 contract Staking is Ownable{
     using Counters for Counters.Counter;
@@ -13,6 +14,8 @@ contract Staking is Ownable{
 
     uint public ethInUsdtPrice;
     uint public STAKINGFEE;
+
+    bool locked;
 
     struct Token{
         uint tokenId;
@@ -26,7 +29,7 @@ contract Staking is Ownable{
 
     struct Position{
         uint positionId;
-        address wallet;
+        address owner;
         string name;
         string symbol;
         uint createDate;
@@ -46,7 +49,8 @@ contract Staking is Ownable{
 
     event AddToken(uint tokenId, address indexed tokenAddress, string indexed name,
     string symbol, uint usdtPrice, uint indexed ethInUsdtPrice, uint apy);
-    event StakingTokens(uint indexed positionId, address indexed owner, uint stakingAmount, uint date);
+    event StakingTokens(uint indexed positionId, address indexed owner, uint stakingAmount, uint indexed date);
+    event StopStaking(uint indexed positionId, address indexed owner, uint rewardPaid, uint indexed date);
 
     constructor(uint currentEtherPrice, uint stakingFee){
         require(stakingFee>0, "staking fee can't be 0");
@@ -76,7 +80,7 @@ contract Staking is Ownable{
     }
 
     function stakeTokens(string calldata symbol, uint stakingAmount) public payable  {
-        require(msg.value==STAKINGFEE, "you must pay fee for staking");
+        require(msg.value == STAKINGFEE, "you must pay fee for staking");
         require(stakingAmount>0, "you can't stake 0 tokens");
         require(tokens[symbol].tokenId!=0, "you can't stake not existent token");
 
@@ -84,7 +88,6 @@ contract Staking is Ownable{
         uint userBalance = IERC20(tokenAddress).balanceOf(msg.sender);
         require(userBalance>=stakingAmount, "you have not enough tokens");
 
-        IERC20(tokenAddress).approve(address(this), stakingAmount);
         IERC20(tokenAddress).transferFrom(msg.sender, address(this), stakingAmount);
         
         positions[currentPositionId.current()] = Position(
@@ -110,6 +113,32 @@ contract Staking is Ownable{
 
     function getPositionById(uint positionid) external view returns(Position memory){
         return positions[positionid];
+    }
+
+    function calculateInterest(uint apy, uint totalQuantityInPosition, uint daysNumber) public pure  returns(uint){
+        return apy * totalQuantityInPosition * daysNumber / 10000 / 365;
+    }
+
+    function closePosition(uint index) public noReentrancy{
+        Position memory position = positions[index];
+        require(position.owner == msg.sender, "not the position owner");
+        require(position.open == true, "position has already been closed");
+        require(position.positionId == index, "not right position id");
+        stakedTokens[position.symbol]-=position.tokenQuantity;
+        IERC20(tokens[position.symbol].tokenAddress).transfer(msg.sender, position.tokenQuantity);
+        uint daysDiff = (block.timestamp - position.createDate) / 60 / 60 / 24;
+        uint reward = calculateInterest(position.apy, position.tokenQuantity, daysDiff);
+        payable(msg.sender).transfer(reward);
+        position.open = false;
+        positions[index] = position;
+        emit StopStaking(position.positionId, position.owner, reward, block.timestamp);
+    }
+
+    modifier noReentrancy(){
+        require(!locked, "reentrancy");
+        locked = true;
+        _;
+        locked = false;
     }
 
 
