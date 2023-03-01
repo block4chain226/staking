@@ -9,7 +9,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <ProviderProvider>
+      <ProviderProvider
+        contractAddress={"0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"}
+      >
         <App />
       </ProviderProvider>
     </AuthProvider>

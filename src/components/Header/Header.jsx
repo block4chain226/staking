@@ -3,11 +3,11 @@ import AuthContext from "../../context/AuthContext";
 import cl from "./Header.module.css";
 
 const Header = () => {
-  const { account, setAccount } = useContext(AuthContext);
+  const { accounts, setAccounts, requestAccount } = useContext(AuthContext);
   return (
     <div className={cl.header}>
       <div className={cl.connect}>
-        <button />
+        <button onClick={requestAccount}>Connect wallet</button>
       </div>
       <div className={cl.wallet}>
         <p></p>
