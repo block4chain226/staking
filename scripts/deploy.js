@@ -9,8 +9,17 @@ async function main() {
     { value: hre.ethers.utils.parseEther("10") }
   );
   await stakingContract.deployed();
+  /////
+  const Cardano = await hre.ethers.getContractFactory("Cardano", tokensOwner);
+  const cardanoContract = await Cardano.deploy(
+    2000,
+    hre.ethers.utils.parseUnits("1000", "wei"),
+    { value: hre.ethers.utils.parseEther("10") }
+  );
+  await cardanoContract.deployed();
 
   console.log("stakingContract address", stakingContract.address);
+  console.log("cardanoContract address", cardanoContract.address);
 }
 
 main().catch((error) => {
