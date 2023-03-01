@@ -3,8 +3,8 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Chainlink is ERC20("Chainlink", "LINK"){
+contract UsdCoin is ERC20("UsdCoin", "USDT"){
     constructor(){
-         _mint(msg.sender, 10000);
+        _mint(msg.sender, 10000);
     }
 }

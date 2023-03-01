@@ -3,7 +3,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Chainlink is ERC20("Chainlink", "LINK"){
+contract WrappedBitcoin is ERC20("WrappedBitcoin", "WBTC"){
     constructor(){
          _mint(msg.sender, 10000);
     }
