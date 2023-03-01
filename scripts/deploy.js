@@ -2,6 +2,7 @@ const hre = require("hardhat");
 
 async function main() {
   const [stakingOwner, tokensOwner] = await hre.ethers.getSigners();
+  /////
   const Staking = await hre.ethers.getContractFactory("Staking", stakingOwner);
   const stakingContract = await Staking.deploy(
     2000,
@@ -18,27 +19,35 @@ async function main() {
   const zilContract = await Zil.deploy();
   await zilContract.deployed();
   /////
-  const ChainLink = await hre.ethers.getContractFactory(
-    "ChainLink",
-    tokensOwner
-  );
-  const chainLinkContract = await ChainLink.deploy();
-  await chainLinkContract.deployed();
-  /////
   const Tether = await hre.ethers.getContractFactory("Tether", tokensOwner);
   const tetherContract = await Tether.deploy();
   await tetherContract.deployed();
   /////
-  const UsdCoin = await hre.ethers.getContractFactory("UsdCoin", tokensOwner);
-  const usdCoinContract = await UsdCoin.deploy();
-  await usdCoinContract.deployed();
+  const WrappedEther = await hre.ethers.getContractFactory(
+    "WrappedEther",
+    tokensOwner
+  );
+  const wrappedEtherContract = await WrappedEther.deploy();
+  await wrappedEtherContract.deployed();
+
+  await cardanoContract
+    .connect(tokensOwner)
+    .approve(stakingContract.address, 10000);
+  await zilContract
+    .connect(tokensOwner)
+    .approve(stakingContract.address, 10000);
+  await wrappedEtherContract
+    .connect(tokensOwner)
+    .approve(stakingContract.address, 10000);
+  await tetherContract
+    .connect(tokensOwner)
+    .approve(stakingContract.address, 10000);
 
   console.log("stakingContract address", stakingContract.address);
   console.log("cardanoContract address", cardanoContract.address);
   console.log("zilContract address", zilContract.address);
-  console.log("chainLinkContract address", chainLinkContract.address);
   console.log("tetherContract address", tetherContract.address);
-  console.log("usdCoinContractContract address", usdCoinContract.address);
+  console.log("wrappedEtherContract address", wrappedEtherContract.address);
 }
 
 main().catch((error) => {
