@@ -24,11 +24,21 @@ async function main() {
   );
   const chainLinkContract = await ChainLink.deploy();
   await chainLinkContract.deployed();
+  /////
+  const Tether = await hre.ethers.getContractFactory("Tether", tokensOwner);
+  const tetherContract = await Tether.deploy();
+  await tetherContract.deployed();
+  /////
+  const UsdCoin = await hre.ethers.getContractFactory("UsdCoin", tokensOwner);
+  const usdCoinContract = await UsdCoin.deploy();
+  await usdCoinContract.deployed();
 
   console.log("stakingContract address", stakingContract.address);
   console.log("cardanoContract address", cardanoContract.address);
   console.log("zilContract address", zilContract.address);
   console.log("chainLinkContract address", chainLinkContract.address);
+  console.log("tetherContract address", tetherContract.address);
+  console.log("usdCoinContractContract address", usdCoinContract.address);
 }
 
 main().catch((error) => {
