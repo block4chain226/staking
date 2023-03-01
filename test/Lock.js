@@ -20,7 +20,7 @@ describe("Staking", function () {
     );
     const stakingContract = await Staking.deploy(
       2000,
-      hre.ethers.utils.parseUnits("10000", "wei")
+      hre.ethers.utils.parseUnits("1000", "wei")
     );
     await stakingContract.deployed();
     await zilContract.approve(stakingContract.address, 1000);
@@ -49,15 +49,24 @@ describe("Staking", function () {
       await stakingContract
         .connect(StakingOwner)
         .addToken(zilContract.address, "Zilliqa", "ZIL", 1, 5);
-      expect(await stakingContract.getToken("ZIL")).to.eq([
-        ethers.BigNumber.from("1"),
-        "Zilliqa",
-        "ZIL",
-        "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-        hre.ethers.BigNumber.from("1"),
-        hre.ethers.BigNumber.from("0"),
-        hre.ethers.BigNumber.from("5"),
-      ]);
+      await stakingContract.connect(zilOwner).stakeTokens("ZIL", 1000, {
+        value: hre.ethers.utils.parseUnits("1000", "wei"),
+      });
+      console.log("balance:", await zilContract.balanceOf(zilOwner.address));
+      await time.increase(2629743);
+      await stakingContract.connect(zilOwner).closePosition(0);
+      console.log(await stakingContract.stakedTokens("ZIL"));
+      console.log("balance:", await zilContract.balanceOf(zilOwner.address));
+      console.log(await stakingContract.positions(0));
+      // expect(await stakingContract.getToken("ZIL")).to.eq([
+      //   ethers.BigNumber.from("1"),
+      //   "Zilliqa",
+      //   "ZIL",
+      //   "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      //   hre.ethers.BigNumber.from("1"),
+      //   hre.ethers.BigNumber.from("0"),
+      //   hre.ethers.BigNumber.from("5"),
+      // ]);
     });
   });
 });

@@ -52,7 +52,7 @@ contract Staking is Ownable{
     event StakingTokens(uint indexed positionId, address indexed owner, uint stakingAmount, uint indexed date);
     event StopStaking(uint indexed positionId, address indexed owner, uint rewardPaid, uint indexed date);
 
-    constructor(uint currentEtherPrice, uint stakingFee){
+    constructor(uint currentEtherPrice, uint stakingFee) payable{
         require(stakingFee>0, "staking fee can't be 0");
         STAKINGFEE = stakingFee;
         ethInUsdtPrice = currentEtherPrice;
@@ -115,8 +115,8 @@ contract Staking is Ownable{
         return positions[positionid];
     }
 
-    function calculateInterest(uint apy, uint totalQuantityInPosition, uint daysNumber) public pure  returns(uint){
-        return apy * totalQuantityInPosition * daysNumber / 10000 / 365;
+    function calculateInterest(uint apy, uint ethValue, uint daysNumber) public pure  returns(uint){
+        return apy * ethValue * daysNumber / 10000 / 365;
     }
 
     function closePosition(uint index) public noReentrancy{
@@ -127,7 +127,7 @@ contract Staking is Ownable{
         stakedTokens[position.symbol]-=position.tokenQuantity;
         IERC20(tokens[position.symbol].tokenAddress).transfer(msg.sender, position.tokenQuantity);
         uint daysDiff = (block.timestamp - position.createDate) / 60 / 60 / 24;
-        uint reward = calculateInterest(position.apy, position.tokenQuantity, daysDiff);
+        uint reward = calculateInterest(position.apy, position.ethValue, daysDiff);
         payable(msg.sender).transfer(reward);
         position.open = false;
         positions[index] = position;
