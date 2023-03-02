@@ -18,5 +18,9 @@
   .market__item {
     display: flex;
     justify-content: space-around;
+    button {
+      width: 60px;
+      height: 30px;
+    }
   }
 }
