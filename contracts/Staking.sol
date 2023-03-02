@@ -75,6 +75,10 @@ contract Staking is Ownable{
         return tokenSymbols;
     }
 
+    function getStakedTokenTotalSupply(string calldata symbol) external view returns(uint){
+        return stakedTokens[symbol];
+    }
+
     function getToken(string calldata symbol) public view returns(Token memory){
         return tokens[symbol];
     }

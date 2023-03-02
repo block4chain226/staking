@@ -5,6 +5,7 @@ import cl from "./Market.module.scss";
 const Market = () => {
   const { contract } = useContext(ProviderContext);
   const [allTokens, setAllTokens] = useState([]);
+  const [supply, setSupply] = useState([]);
 
   async function getAllTokens() {
     const allSymbols = await contract.getTokensSymbols();
@@ -13,6 +14,12 @@ const Market = () => {
     );
     Promise.all(tokensTemp).then((tokens) => {
       setAllTokens((prevTokens) => [...prevTokens, ...tokens]);
+    });
+    const totalSupply = allSymbols.map(async (symbol) => {
+      return await contract.getStakedTokenTotalSupply(symbol);
+    });
+    Promise.all(totalSupply).then((tokens) => {
+      return setSupply([tokens.toString()]);
     });
   }
 
@@ -33,10 +40,11 @@ const Market = () => {
             <button>Stake</button>
           </div>
           {allTokens &&
-            allTokens.map((item) => (
-              <div className={cl.market__item}>
+            allTokens.map((item, key) => (
+              <div key={item.tokenId.toString()} className={cl.market__item}>
                 <p>{item.tokenName}</p>
                 <p>{item.tokenSymbol}</p>
+                <p>{item.usdtPrice.toString()}</p>
               </div>
             ))}
         </div>
