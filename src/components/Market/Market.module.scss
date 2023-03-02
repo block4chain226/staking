@@ -1,0 +1,22 @@
+.market {
+  width: 100%;
+  padding: 5px;
+
+  .market__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .market__title {
+    display: flex;
+    justify-content: center;
+  }
+  .market__content {
+    display: flex;
+    flex-direction: column;
+  }
+  .market__item {
+    display: flex;
+    justify-content: space-around;
+  }
+}
