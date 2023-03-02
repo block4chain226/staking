@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import ProviderContext from "../../providers/ProviderContext";
 import cl from "./Market.module.scss";
 
 const Market = () => {
+  const { contract } = useContext(ProviderContext);
+  const [allTokens, setAllTokens] = useState([]);
+
+  async function getAllTokens() {
+    const allSymbols = await contract.getTokensSymbols();
+    const tokensTemp = allSymbols.map(
+      async (symbol) => await contract.getToken(symbol)
+    );
+    console.log(
+      "🚀 ~ file: Market.jsx:14 ~ getAllTokens ~ tokensTemp:",
+      allSymbols
+    );
+  }
+
   return (
     <div className={cl.market}>
+      <button onClick={getAllTokens}>get</button>
       <div className={cl.market__container}>
         <div className={cl.market__title}>
           <p>Ethereum market</p>

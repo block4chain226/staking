@@ -43,6 +43,29 @@ async function main() {
     .connect(tokensOwner)
     .approve(stakingContract.address, 10000);
 
+  await stakingContract.addToken(
+    cardanoContract.address,
+    "Cardano",
+    "ADA",
+    3,
+    10
+  );
+  await stakingContract.addToken(zilContract.address, "Zilliqa", "ZIL", 5, 12);
+  await stakingContract.addToken(
+    wrappedEtherContract.address,
+    "WrappedEther",
+    "ETH",
+    2000,
+    8
+  );
+  await stakingContract.addToken(
+    tetherContract.address,
+    "Tether",
+    "USDT",
+    1,
+    5
+  );
+
   console.log("stakingContract address", stakingContract.address);
   console.log("cardanoContract address", cardanoContract.address);
   console.log("zilContract address", zilContract.address);
