@@ -11,10 +11,9 @@ const Market = () => {
     const tokensTemp = allSymbols.map(
       async (symbol) => await contract.getToken(symbol)
     );
-    console.log(
-      "🚀 ~ file: Market.jsx:14 ~ getAllTokens ~ tokensTemp:",
-      allSymbols
-    );
+    Promise.all(tokensTemp).then((tokens) => {
+      setAllTokens((prevTokens) => [...prevTokens, ...tokens]);
+    });
   }
 
   return (
@@ -33,6 +32,13 @@ const Market = () => {
             <p>Apy</p>
             <button>Stake</button>
           </div>
+          {allTokens &&
+            allTokens.map((item) => (
+              <div className={cl.market__item}>
+                <p>{item.tokenName}</p>
+                <p>{item.tokenSymbol}</p>
+              </div>
+            ))}
         </div>
       </div>
     </div>
