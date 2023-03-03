@@ -1,0 +1,31 @@
+.modal {
+  background: green;
+  border-radius: 10px;
+  position: absolute;
+  float: left;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  height: 30%;
+  padding: 5px;
+
+  .modal__center {
+    padding: 5px;
+    background: #eee;
+    border-radius: 5px;
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 400px;
+    margin: 10px;
+  }
+  .modal__button {
+    position: absolute;
+    border-radius: 10px;
+    background-color: teal;
+    height: 30px;
+    width: 30px;
+    right: 0px;
+    // top: 0;
+  }
+}

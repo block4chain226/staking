@@ -1,7 +1,7 @@
 .market {
   width: 100%;
   padding: 5px;
-
+  background-color: #ffffff;
   .market__container {
     width: 100%;
     display: flex;
@@ -17,10 +17,12 @@
   }
   .market__item {
     display: flex;
-    justify-content: space-around;
     button {
       width: 60px;
       height: 30px;
+    }
+    p {
+      width: 20%;
     }
   }
 }

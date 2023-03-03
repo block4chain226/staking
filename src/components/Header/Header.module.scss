@@ -1,0 +1,23 @@
+.header {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  .header__connect {
+  }
+  button {
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: teal;
+    border: 2px solid white;
+  }
+  .header__wallet {
+    font-size: 20px;
+    color: #ffffff;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
