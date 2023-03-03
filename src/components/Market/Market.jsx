@@ -9,7 +9,8 @@ import ProviderContext from "../../providers/ProviderContext";
 import AuthContext from "../../context/AuthContext";
 import cl from "./Market.module.scss";
 import Modal from "../Modal/Modal";
-
+//lsof -i:8545
+//kill -9
 const Market = () => {
   const { contract } = useContext(ProviderContext);
   const { accounts } = useContext(AuthContext);
@@ -49,34 +50,57 @@ const Market = () => {
               <p>Ethereum market</p>
             </div>
             <div className={cl.market__content}>
-              <div className={cl.market__item}>
-                <p>Asset</p>
-                <p>Symbol</p>
-                <p>Price</p>
-                <p>Supply</p>
-                <p>Apy</p>
+              <div
+                className={cl.market__row}
+                style={{ padding: "10px", textAlign: "center" }}
+              >
+                <div className={cl.market__item}>
+                  <p>Asset</p>
+                </div>
+                <div className={cl.market__item}>
+                  <p>Asset</p>
+                </div>
+                <div className={cl.market__item}>
+                  <p>Asset</p>
+                </div>
+                <div className={cl.market__item}>
+                  <p>Asset</p>
+                </div>
+                <div className={cl.market__item}>
+                  <p>Asset</p>
+                </div>
+                <div className={cl.market__item}></div>
               </div>
               {allTokens &&
                 allTokens.map((item, key) => (
-                  <div
-                    key={item.tokenId.toString()}
-                    className={cl.market__item}
-                  >
-                    <p>{item.tokenName}</p>
-                    <p>{item.tokenSymbol}</p>
-                    <p>{item.usdtPrice.toString()}</p>
-                    <p>{supply.toString()[key]}</p>
-                    <p>{item.apy.toString()}</p>
-                    <button
-                      onClick={(e) => {
-                        symbolRef.current = item.tokenSymbol;
-                        setShowModal(true);
-                        console.log(e.target.getAttribute("data-id"));
-                        console.log(symbolRef);
-                      }}
-                    >
-                      Stake
-                    </button>
+                  <div key={item.tokenId.toString()} className={cl.market__row}>
+                    <div className={cl.market__item}>
+                      <p>{item.tokenName}</p>
+                    </div>
+                    <div className={cl.market__item}>
+                      <p>{item.tokenSymbol}</p>
+                    </div>
+                    <div className={cl.market__item}>
+                      <p>{item.usdtPrice.toString()}</p>
+                    </div>
+                    <div className={cl.market__item}>
+                      <p>{supply.toString()[key]}</p>
+                    </div>
+                    <div className={cl.market__item}>
+                      <p>{item.apy.toString()}</p>
+                    </div>
+                    <div className={cl.market__item}>
+                      <button
+                        onClick={(e) => {
+                          symbolRef.current = item.tokenSymbol;
+                          setShowModal(true);
+                          console.log(e.target.getAttribute("data-id"));
+                          console.log(symbolRef);
+                        }}
+                      >
+                        Stake
+                      </button>
+                    </div>
                   </div>
                 ))}
             </div>
