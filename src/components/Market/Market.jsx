@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ProviderContext from "../../providers/ProviderContext";
 import AuthContext from "../../context/AuthContext";
 import cl from "./Market.module.scss";
@@ -10,6 +16,7 @@ const Market = () => {
   const [allTokens, setAllTokens] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [supply, setSupply] = useState([]);
+  let symbolRef = useRef("");
 
   const getAllTokens = useCallback(async () => {
     const allSymbols = await contract.getTokensSymbols();
@@ -33,7 +40,7 @@ const Market = () => {
 
   return (
     <>
-      {showModal && <Modal />}
+      {showModal && <Modal symbol={symbolRef.current} contract={contract} />}
       {accounts[0] ? (
         <div className={cl.market}>
           {/* <button onClick={getAllTokens}>get</button> */}
@@ -61,10 +68,11 @@ const Market = () => {
                     <p>{supply.toString()[key]}</p>
                     <p>{item.apy.toString()}</p>
                     <button
-                      data-id="vasa"
                       onClick={(e) => {
+                        symbolRef.current = item.tokenSymbol;
                         setShowModal(true);
                         console.log(e.target.getAttribute("data-id"));
+                        console.log(symbolRef);
                       }}
                     >
                       Stake
