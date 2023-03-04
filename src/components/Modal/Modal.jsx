@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import cl from "./Modal.module.scss";
-import { useAllUserPositions } from "../../hooks/usePositions";
+import usePositions, { useAllUserPositions } from "../../hooks/usePositions";
 const { ethers } = require("ethers");
 
 const Modal = ({ symbol, contract, account }) => {
   const [stakeAmount, setStakeAmount] = useState("");
   const [allUserPositions, setAllUserPositions] = useState([]);
 
-  // const ids = useAllUserPositions(contract, account);
-  // console.log("🚀 ~ file: Modal.jsx:10 ~ Modal ~ ids:", ids);
+  const ids = usePositions(contract, account);
+  console.log("🚀 ~ file: Modal.jsx:10 ~ Modal ~ ids:", ids);
 
   async function stakeTokens(e) {
     e.preventDefault();
@@ -24,7 +24,7 @@ const Modal = ({ symbol, contract, account }) => {
     return await contract.getPositionsIdsByAddress(account);
   }
 
-  async function getAllUserPositions(e) {
+  async function getAllUserPositions1(e) {
     e.preventDefault();
     const allUserPositionsId = getAllUserPositionsId();
     Promise.all(
@@ -65,7 +65,7 @@ const Modal = ({ symbol, contract, account }) => {
                 borderRadius: "10px",
                 padding: "5px 15px",
               }}
-              onClick={(e) => getAllUserPositions(e)}
+              onClick={(e) => getAllUserPositions1(e)}
             >
               Get all positions
             </button>

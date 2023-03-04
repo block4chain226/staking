@@ -1,26 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const usePositions = () => {
-  // const [allPositions, setAllPositions] = useState([]);
-  const useAllUserPositionsId = async (contract, account) => {
+const usePositions = (contract, account) => {
+  const [allPositions, setAllPositions] = useState([]);
+
+  const getAllUserPositionsId = async () => {
     let positionsIdsPromises = await contract.getPositionsIdsByAddress(account);
-    positionsIdsPromises = positionsIdsPromises.map((item) => item.toString());
-    return [positionsIdsPromises];
+    console.log(
+      "🚀 ~ file: usePositions.jsx:8 ~ getAllUserPositionsId ~ positionsIdsPromises:",
+      positionsIdsPromises
+    );
+
+    const ids = positionsIdsPromises.map((item) => {
+      let obj = item._hex;
+      const vasa = Object.values(obj.split());
+      return vasa[0];
+    });
+    console.log("🚀 ~ file: usePositions.jsx:12 ~ ids ~ ids:", ids);
+
+    // positionsIdsPromises = positionsIdsPromises.map((item) => {
+    //   return item.toString();
+    // });
+    // return positionsIdsPromises;
   };
 
-  const useAllUserPositions = async (contract, account) => {
-    const allUserPositionsId = useAllUserPositionsId();
-    let allUserPositions = Promise.all(
+  const getAllUserPositions = async () => {
+    const allUserPositionsId = getAllUserPositionsId();
+    Promise.all(
       allUserPositionsId.then((data) =>
         data.map(async (item) => {
-          return await contract.getPositionById(item.toString());
-          // setAllUserPositions((prev) => [...prev, position]);
+          const position = await contract.getPositionById(item.toString());
+          setAllPositions((prev) => [...prev, position]);
         })
       )
     );
-    console.log(allUserPositions);
-    return [allUserPositions];
+
+    return [allPositions];
   };
+
+  useEffect(() => {
+    if (contract && account) {
+      debugger;
+      getAllUserPositionsId();
+    }
+  }, []);
   return <div></div>;
 };
 
