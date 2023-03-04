@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import cl from "./Modal.module.scss";
+import { useAllUserPositions } from "../../hooks/usePositions";
 const { ethers } = require("ethers");
 
 const Modal = ({ symbol, contract, account }) => {
   const [stakeAmount, setStakeAmount] = useState("");
   const [allUserPositions, setAllUserPositions] = useState([]);
+
+  // const ids = useAllUserPositions(contract, account);
+  // console.log("🚀 ~ file: Modal.jsx:10 ~ Modal ~ ids:", ids);
 
   async function stakeTokens(e) {
     e.preventDefault();
