@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import cl from "./Modal.module.scss";
 const { ethers } = require("ethers");
 
-const Modal = ({ symbol, contract }) => {
+const Modal = ({ symbol, contract, account }) => {
   const [stakeAmount, setStakeAmount] = useState("");
+  const [allUserPositions, setAllUserPositions] = useState([]);
 
   async function stakeTokens(e) {
     e.preventDefault();
@@ -13,6 +14,27 @@ const Modal = ({ symbol, contract }) => {
       });
       console.log(await contract.getPositionById(0));
     }
+  }
+
+  async function getAllUserPositionsId() {
+    return await contract.getPositionsIdsByAddress(account);
+  }
+
+  async function getAllUserPositions(e) {
+    e.preventDefault();
+    const allUserPositionsId = getAllUserPositionsId();
+    Promise.all(
+      allUserPositionsId.then((data) =>
+        data.map(async (item) => {
+          const position = await contract.getPositionById(item.toString());
+          setAllUserPositions((prev) => [...prev, position]);
+        })
+      )
+    );
+  }
+  function show(e) {
+    e.preventDefault();
+    console.log(allUserPositions);
   }
   return (
     <div className={cl.modal}>
@@ -33,6 +55,24 @@ const Modal = ({ symbol, contract }) => {
               onClick={(e) => stakeTokens(e)}
             >
               Stake
+            </button>
+            <button
+              style={{
+                borderRadius: "10px",
+                padding: "5px 15px",
+              }}
+              onClick={(e) => getAllUserPositions(e)}
+            >
+              Get all positions
+            </button>
+            <button
+              style={{
+                borderRadius: "10px",
+                padding: "5px 15px",
+              }}
+              onClick={(e) => show(e)}
+            >
+              Show
             </button>
           </label>
         </form>

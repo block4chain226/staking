@@ -11,6 +11,7 @@ import cl from "./Market.module.scss";
 import Modal from "../Modal/Modal";
 //lsof -i:8545
 //kill -9
+//npx hardhat run scripts/deploy.js --network localhost
 const Market = () => {
   const { contract } = useContext(ProviderContext);
   const { accounts } = useContext(AuthContext);
@@ -19,29 +20,37 @@ const Market = () => {
   const [supply, setSupply] = useState([]);
   let symbolRef = useRef("");
 
-  const getAllTokens = useCallback(async () => {
+  async function getAllTokens() {
     const allSymbols = await contract.getTokensSymbols();
     const tokensTemp = allSymbols.map(
       async (symbol) => await contract.getToken(symbol)
     );
+
     Promise.all(tokensTemp).then((tokens) => {
       setAllTokens((prevTokens) => [...prevTokens, ...tokens]);
     });
     const totalSupply = allSymbols.map(async (symbol) => {
       return await contract.getStakedTokenTotalSupply(symbol);
     });
+
     Promise.all(totalSupply).then((tokens) => {
       setSupply([tokens]);
     });
-  }, []);
+  }
 
   useEffect(() => {
     getAllTokens();
-  }, [getAllTokens]);
+  }, []);
 
   return (
     <>
-      {showModal && <Modal symbol={symbolRef.current} contract={contract} />}
+      {showModal && (
+        <Modal
+          symbol={symbolRef.current}
+          account={accounts[0]}
+          contract={contract}
+        />
+      )}
       {accounts[0] ? (
         <div className={cl.market}>
           {/* <button onClick={getAllTokens}>get</button> */}

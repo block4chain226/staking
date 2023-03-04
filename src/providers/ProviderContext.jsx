@@ -7,8 +7,9 @@ const ProviderContext = createContext();
 
 export const ProviderProvider = (props) => {
   let contract;
+
   const [updated, setUpdated] = useState(0);
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const contractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
   async function getProvider(contractAddress) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -16,6 +17,7 @@ export const ProviderProvider = (props) => {
   }
 
   // useEffect(() => {
+
   getProvider(contractAddress);
   // }, []);
 

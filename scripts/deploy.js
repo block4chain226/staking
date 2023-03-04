@@ -71,6 +71,8 @@ async function main() {
   console.log("zilContract address", zilContract.address);
   console.log("tetherContract address", tetherContract.address);
   console.log("wrappedEtherContract address", wrappedEtherContract.address);
+  console.log("stakingOwner", stakingOwner.address);
+  console.log("tokensOwner", tokensOwner.address);
 }
 
 main().catch((error) => {
