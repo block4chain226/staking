@@ -22,7 +22,6 @@ const usePositions = (contract, account, option = "") => {
 
   const getTotalTokensMarket = async () => {
     let tokensTotalMarket;
-
     if (allPositions.length > 0) {
       allPositions.map(async (position) => {
         tokensTotalMarket = await contract.getStakedTokenTotalSupply(
@@ -32,11 +31,8 @@ const usePositions = (contract, account, option = "") => {
           ...prev,
           Object.values(tokensTotalMarket._hex.split())[0],
         ]);
-        // return tokensTotalMarket.toString();
       });
     }
-    console.log(tokensTotalMarket);
-    // setTokensTotalMarket(tokensTotalMarket);
   };
 
   useEffect(() => {

@@ -7,16 +7,17 @@ const Modal = ({ symbol, contract, account }) => {
   const [stakeAmount, setStakeAmount] = useState("");
   const [allUserPositions, setAllUserPositions] = useState([]);
 
-  const [accountPositions, tokensTotalMarket] = usePositions(contract, account);
-  console.log(
-    "🚀 ~ file: Modal.jsx:11 ~ Modal ~ tokensTotalMarket:",
-    tokensTotalMarket
-  );
+  // const [accountPositions, tokensTotalMarket] = usePositions(contract, account);
 
-  console.log(
-    "🚀 ~ file: Modal.jsx:11 ~ Modal ~ accountPositions:",
-    accountPositions
-  );
+  // console.log(
+  //   "🚀 ~ file: Modal.jsx:11 ~ Modal ~ tokensTotalMarket:",
+  //   tokensTotalMarket
+  // );
+
+  // console.log(
+  //   "🚀 ~ file: Modal.jsx:11 ~ Modal ~ accountPositions:",
+  //   accountPositions
+  // );
 
   async function stakeTokens(e) {
     e.preventDefault();

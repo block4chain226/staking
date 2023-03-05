@@ -16,21 +16,14 @@ import usePositions from "../../hooks/usePositions";
 const Positions = () => {
   const { contract } = useContext(ProviderContext);
   const { accounts } = useContext(AuthContext);
-  const [allTokens, setAllTokens] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [supply, setSupply] = useState([]);
 
-  // const accountPositions = usePositions(contract, accounts[0]);
+  const [accountPositions, tokensTotalMarket] = usePositions(
+    contract,
+    accounts[0]
+  );
 
   return (
     <>
-      {showModal && (
-        <Modal
-          symbol={symbolRef.current}
-          account={accounts[0]}
-          contract={contract}
-        />
-      )}
       {accounts[0] ? (
         <div className={cl.market}>
           <div className={cl.market__container}>
@@ -69,7 +62,7 @@ const Positions = () => {
                       <p>{item.symbol}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <p>{item.tokenQuantity}</p>
+                      <p>{item.tokenQuantity.toString()}</p>
                     </div>
                     <div className={cl.market__item}>
                       <p>{item.usdtValue.toString()}</p>
@@ -82,12 +75,12 @@ const Positions = () => {
                     </div>
                     <div className={cl.market__item}>
                       <button
-                        onClick={(e) => {
-                          symbolRef.current = item.tokenSymbol;
-                          setShowModal(true);
-                          console.log(e.target.getAttribute("data-id"));
-                          console.log(symbolRef);
-                        }}
+                      // onClick={(e) => {
+                      //   symbolRef.current = item.tokenSymbol;
+                      //   setShowModal(true);
+                      //   console.log(e.target.getAttribute("data-id"));
+                      //   console.log(symbolRef);
+                      // }}
                       >
                         Withdraw
                       </button>
@@ -104,4 +97,4 @@ const Positions = () => {
   );
 };
 
-export default Market;
+export default Positions;
