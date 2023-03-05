@@ -11,6 +11,7 @@ import cl from "./Positions.module.scss";
 import Modal from "../Modal/Modal";
 import usePositions from "../../hooks/usePositions";
 import { type } from "@testing-library/user-event/dist/type";
+import { ethers } from "hardhat";
 //lsof -i:8545
 //kill -9
 //npx hardhat run scripts/deploy.js --network localhost
@@ -18,30 +19,39 @@ const Positions = () => {
   const { contract } = useContext(ProviderContext);
   const { accounts } = useContext(AuthContext);
   const [allAccountPositions, setAllAccountPositions] = useState([]);
-  const [tt, setTt] = useState("");
 
   const [accountPositions, tokensTotalMarket] = usePositions(
     contract,
     accounts[0]
   );
-  console.log(accountPositions);
-  useEffect(() => {
-    setAllAccountPositions(accountPositions);
-  }, [accountPositions]);
 
-  function getDate() {
-    const nowTime = new Date().getTime() / 1000;
-    let time;
-    accountPositions.map((item) => {
-      time = +accountPositions[0].createDate;
-    });
-    const difference = nowTime - new Date(time);
+  async function prepareAsset() {
+    if (accountPositions) {
+      accountPositions.map(async (position) => {
+        const daysStaked = await contract.calculateNumberDays(
+          position.createDate
+        );
+        const accruedInterestWei = await contract.calculateInterest(
+          position.apy,
+          position.ethValue,
+          daysStaked
+        );
+        const accruedInterestEther =
+          ethers.utils.parseEther(accruedInterestWei);
+      });
+    }
+  }
 
-    console.log(Math.floor(difference / 1000 / 60 / 60 / 24));
+  async function getNumberDays(numberDays) {
+    return await contract.calculateNumberDays(numberDays);
+  }
+
+  async function getInterest(apy, value, daysNumber) {
+    return await contract.calculateInterest(apy, value, daysNumber);
   }
 
   useEffect(() => {
-    getDate();
+    setAllAccountPositions(accountPositions);
   }, [accountPositions]);
 
   return (
@@ -89,24 +99,24 @@ const Positions = () => {
                     <div className={cl.market__item}>
                       {/* <p>{item.usdtValue.toString()}</p> */}
                       <p>
-                        {/* {item.apy *
-                          ((item.apy / 100) *
+                        {/* {(
+                          (item.apy *
                             2000 *
-                            ((new Date().getTime() - item.createDate) /
-                              100000000000 /
-                              365))} */}
-                        {(item.apy *
-                          2000 *
-                          Math.floor(
-                            (new Date().getTime() / 1000 -
-                              new Date(+item.createDate)) /
-                              1000 /
-                              60 /
-                              60 /
-                              24
-                          )) /
+                            (new Date().getTime() +
+                              (1000 * 60 * 60 * 24 * 1) / 1000 -
+                              new Date(+item.createDate))) /
                           1000 /
-                          365}
+                          60 /
+                          60 /
+                          24 /
+                          1000 /
+                          365
+                        ).toLocaleString("en-US", {
+                          minimumIntegerDigits: 1,
+                          useGrouping: false,
+                        })} */}
+
+                        {}
                       </p>
                     </div>
                     <div className={cl.market__item}>

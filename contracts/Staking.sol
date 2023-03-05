@@ -119,8 +119,12 @@ contract Staking is Ownable{
         return positions[positionid];
     }
 
-    function calculateInterest(uint apy, uint ethValue, uint daysNumber) public pure  returns(uint){
-        return apy * ethValue * daysNumber / 10000 / 365;
+    function calculateNumberDays(uint createdDate) public view returns(uint){
+        return (block.timestamp - createdDate) / 60 / 60 / 24;
+    }
+
+    function calculateInterest(uint apy, uint value, uint daysNumber) public pure  returns(uint){
+        return apy * value * daysNumber / 10000 / 365;
     }
 
     function closePosition(uint index) public noReentrancy{
