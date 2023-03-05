@@ -37,7 +37,7 @@ const usePositions = (contract, account, option = "") => {
 
   useEffect(() => {
     getAllUserPositionsId();
-  }, []);
+  }, [account]);
 
   useEffect(() => {
     getAllUserPositions();

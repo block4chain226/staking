@@ -10,8 +10,6 @@ import AuthContext from "../../context/AuthContext";
 import cl from "./Positions.module.scss";
 import Modal from "../Modal/Modal";
 import usePositions from "../../hooks/usePositions";
-import { type } from "@testing-library/user-event/dist/type";
-import { ethers } from "hardhat";
 //lsof -i:8545
 //kill -9
 //npx hardhat run scripts/deploy.js --network localhost
@@ -27,7 +25,7 @@ const Positions = () => {
 
   async function prepareAsset() {
     if (accountPositions) {
-      accountPositions.map(async (position) => {
+      const vvv = accountPositions.map(async (position) => {
         const daysStaked = await contract.calculateNumberDays(
           position.createDate
         );
@@ -36,9 +34,22 @@ const Positions = () => {
           position.ethValue,
           daysStaked
         );
-        const accruedInterestEther =
-          ethers.utils.parseEther(accruedInterestWei);
+        const parsedAsset = {
+          positionId: Number(position.positionId),
+          tokenName: position.name,
+          tokenSymbol: position.symbol,
+          createdDate: Number(position.createDate),
+          apy: position.apy / 100,
+          tokensStaked: Number(position.tokenQuantity),
+          usdtValue: position.usdtValue / 100,
+          usdAccruedInterest: Number(accruedInterestWei),
+          ethAccruedInterest: Number(accruedInterestWei),
+          open: position.open,
+        };
+
+        setAllAccountPositions((prev) => [...prev, parsedAsset]);
       });
+      console.log(vvv);
     }
   }
 
@@ -50,12 +61,18 @@ const Positions = () => {
     return await contract.calculateInterest(apy, value, daysNumber);
   }
 
+  function f() {
+    console.log(allAccountPositions);
+  }
+
   useEffect(() => {
-    setAllAccountPositions(accountPositions);
+    // setAllAccountPositions(accountPositions);
+    prepareAsset();
   }, [accountPositions]);
 
   return (
     <>
+      <button onClick={f}>fdgdf</button>
       {accounts[0] ? (
         <div className={cl.market}>
           <div className={cl.market__container}>
@@ -84,58 +101,26 @@ const Positions = () => {
                 </div>
                 <div className={cl.market__item}></div>
               </div>
-              {accountPositions &&
-                accountPositions.map((item, key) => (
-                  <div
-                    key={item.positionId.toString()}
-                    className={cl.market__row}
-                  >
+              {allAccountPositions &&
+                Object.values(allAccountPositions).map((item, key) => (
+                  <div key={item.positionId} className={cl.market__row}>
                     <div className={cl.market__item}>
-                      <p>{item.symbol}</p>
+                      <p>{item.tokenSymbol}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <p>{item.tokenQuantity.toString()}</p>
+                      <p>{item.tokensStaked}</p>
                     </div>
                     <div className={cl.market__item}>
-                      {/* <p>{item.usdtValue.toString()}</p> */}
-                      <p>
-                        {/* {item.apy *
-                          ((item.apy / 100) *
-                            2000 *
-                            ((new Date().getTime() - item.createDate) /
-                              100000000000 /
-                              365))} */}
-                        {(item.apy *
-                          2000 *
-                          Math.floor(
-                            (new Date().getTime() / 1000 -
-                              new Date(+item.createDate)) /
-                              1000 /
-                              60 /
-                              60 /
-                              24
-                          )) /
-                          1000 /
-                          365}
-                      </p>
+                      <p>{item.usdtValue}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <p>{item.ethValue.toString()[key]}</p>
+                      <p>{item.usdAccruedInterest}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <p>{item.apy.toString()}</p>
+                      <p>{item.usdAccruedInterest}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <button
-                      // onClick={(e) => {
-                      //   symbolRef.current = item.tokenSymbol;
-                      //   setShowModal(true);
-                      //   console.log(e.target.getAttribute("data-id"));
-                      //   console.log(symbolRef);
-                      // }}
-                      >
-                        Withdraw
-                      </button>
+                      <button>Withdraw</button>
                     </div>
                   </div>
                 ))}
