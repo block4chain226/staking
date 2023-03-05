@@ -21,9 +21,7 @@ const Market = () => {
   let symbolRef = useRef("");
 
   async function getAllTokens() {
-    console.log(accounts[0]);
     const allSymbols = await contract.getTokensSymbols();
-
     const tokensTemp = allSymbols.map(
       async (symbol) => await contract.getToken(symbol)
     );
@@ -42,7 +40,7 @@ const Market = () => {
 
   useEffect(() => {
     getAllTokens();
-  }, [accounts[0]]);
+  }, []);
 
   return (
     <>
@@ -53,7 +51,7 @@ const Market = () => {
           contract={contract}
         />
       )}
-      {accounts[0] && allTokens && supply ? (
+      {accounts[0] ? (
         <div className={cl.market}>
           {/* <button onClick={getAllTokens}>get</button> */}
           <div className={cl.market__container}>

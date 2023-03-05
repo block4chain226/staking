@@ -18,7 +18,6 @@ import { ethers } from "hardhat";
 const Positions = () => {
   const { contract } = useContext(ProviderContext);
   const { accounts } = useContext(AuthContext);
-  const [allAccountPositions, setAllAccountPositions] = useState([]);
 
   const [accountPositions, tokensTotalMarket] = usePositions(
     contract,
@@ -84,8 +83,8 @@ const Positions = () => {
                 </div>
                 <div className={cl.market__item}></div>
               </div>
-              {allAccountPositions &&
-                allAccountPositions.map((item, key) => (
+              {accountPositions &&
+                accountPositions.map((item, key) => (
                   <div
                     key={item.positionId.toString()}
                     className={cl.market__row}
@@ -99,24 +98,24 @@ const Positions = () => {
                     <div className={cl.market__item}>
                       {/* <p>{item.usdtValue.toString()}</p> */}
                       <p>
-                        {/* {(
-                          (item.apy *
+                        {/* {item.apy *
+                          ((item.apy / 100) *
                             2000 *
-                            (new Date().getTime() +
-                              (1000 * 60 * 60 * 24 * 1) / 1000 -
-                              new Date(+item.createDate))) /
+                            ((new Date().getTime() - item.createDate) /
+                              100000000000 /
+                              365))} */}
+                        {(item.apy *
+                          2000 *
+                          Math.floor(
+                            (new Date().getTime() / 1000 -
+                              new Date(+item.createDate)) /
+                              1000 /
+                              60 /
+                              60 /
+                              24
+                          )) /
                           1000 /
-                          60 /
-                          60 /
-                          24 /
-                          1000 /
-                          365
-                        ).toLocaleString("en-US", {
-                          minimumIntegerDigits: 1,
-                          useGrouping: false,
-                        })} */}
-
-                        {}
+                          365}
                       </p>
                     </div>
                     <div className={cl.market__item}>
