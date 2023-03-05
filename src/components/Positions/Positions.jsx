@@ -9,6 +9,7 @@ import ProviderContext from "../../providers/ProviderContext";
 import AuthContext from "../../context/AuthContext";
 import cl from "./Positions.module.scss";
 import Modal from "../Modal/Modal";
+import usePositions from "../../hooks/usePositions";
 //lsof -i:8545
 //kill -9
 //npx hardhat run scripts/deploy.js --network localhost
@@ -18,6 +19,8 @@ const Positions = () => {
   const [allTokens, setAllTokens] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [supply, setSupply] = useState([]);
+
+  // const accountPositions = usePositions(contract, accounts[0]);
 
   return (
     <>
@@ -56,20 +59,23 @@ const Positions = () => {
                 </div>
                 <div className={cl.market__item}></div>
               </div>
-              {allTokens &&
-                allTokens.map((item, key) => (
-                  <div key={item.tokenId.toString()} className={cl.market__row}>
+              {accountPositions &&
+                accountPositions.map((item, key) => (
+                  <div
+                    key={item.positionId.toString()}
+                    className={cl.market__row}
+                  >
                     <div className={cl.market__item}>
-                      <p>{item.tokenName}</p>
+                      <p>{item.symbol}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <p>{item.tokenSymbol}</p>
+                      <p>{item.tokenQuantity}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <p>{item.usdtPrice.toString()}</p>
+                      <p>{item.usdtValue.toString()}</p>
                     </div>
                     <div className={cl.market__item}>
-                      <p>{supply.toString()[key]}</p>
+                      <p>{item.ethValue.toString()[key]}</p>
                     </div>
                     <div className={cl.market__item}>
                       <p>{item.apy.toString()}</p>
@@ -83,7 +89,7 @@ const Positions = () => {
                           console.log(symbolRef);
                         }}
                       >
-                        Stake
+                        Withdraw
                       </button>
                     </div>
                   </div>

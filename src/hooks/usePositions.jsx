@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-const usePositions = (contract, account) => {
+const usePositions = (contract, account, option = "") => {
   const [allPositions, setAllPositions] = useState([]);
   const [allIds, setAllIds] = useState("");
+  const [tokensTotalMarket, setTokensTotalMarket] = useState([]);
 
   const getAllUserPositionsId = async () => {
     let positionsIdsPromises = await contract.getPositionsIdsByAddress(account);
@@ -10,46 +11,47 @@ const usePositions = (contract, account) => {
       return Object.values(item._hex.split())[0];
     });
     setAllIds(ids);
-    // return ids;
   };
 
   const getAllUserPositions = async () => {
-    console.log(allIds);
-
-    // Promise.all(
-    //   allIds.then((data) =>
     allIds.map(async (item) => {
       const position = await contract.getPositionById(item);
       setAllPositions((prev) => [...prev, position]);
     });
-    //   )
-    // );
+  };
 
-    // Promise.all(
-    //   allUserPositionsId.then((data) =>
-    //     data.map(async (item) => {
-    //       const position = await contract.getPositionById(item.toString());
-    //       setAllPositions((prev) => [...prev, position]);
-    //     })
-    //   )
-    // );
+  const getTotalTokensMarket = async () => {
+    let tokensTotalMarket;
 
-    // return [allPositions];
+    if (allPositions.length > 0) {
+      allPositions.map(async (position) => {
+        tokensTotalMarket = await contract.getStakedTokenTotalSupply(
+          position.symbol
+        );
+        setTokensTotalMarket((prev) => [
+          ...prev,
+          Object.values(tokensTotalMarket._hex.split())[0],
+        ]);
+        // return tokensTotalMarket.toString();
+      });
+    }
+    console.log(tokensTotalMarket);
+    // setTokensTotalMarket(tokensTotalMarket);
   };
 
   useEffect(() => {
-    if (contract && account) {
-      getAllUserPositionsId();
-    }
+    getAllUserPositionsId();
   }, []);
 
   useEffect(() => {
     getAllUserPositions();
   }, [allIds]);
+
   useEffect(() => {
-    console.log(allPositions);
+    getTotalTokensMarket();
   }, [allPositions]);
-  return <div></div>;
+
+  return [allPositions, tokensTotalMarket];
 };
 
 export default usePositions;
