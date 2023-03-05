@@ -18,6 +18,7 @@ import { ethers } from "hardhat";
 const Positions = () => {
   const { contract } = useContext(ProviderContext);
   const { accounts } = useContext(AuthContext);
+  const [allAccountPositions, setAllAccountPositions] = useState([]);
 
   const [accountPositions, tokensTotalMarket] = usePositions(
     contract,
