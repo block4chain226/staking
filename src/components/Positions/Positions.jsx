@@ -53,26 +53,16 @@ const Positions = () => {
     }
   }
 
-  async function getNumberDays(numberDays) {
-    return await contract.calculateNumberDays(numberDays);
-  }
-
-  async function getInterest(apy, value, daysNumber) {
-    return await contract.calculateInterest(apy, value, daysNumber);
-  }
-
   function f() {
     console.log(allAccountPositions);
   }
 
   useEffect(() => {
-    // setAllAccountPositions(accountPositions);
     prepareAsset();
   }, [accountPositions]);
 
   return (
     <>
-      <button onClick={f}>fdgdf</button>
       {accounts[0] ? (
         <div className={cl.market}>
           <div className={cl.market__container}>
@@ -101,7 +91,7 @@ const Positions = () => {
                 </div>
                 <div className={cl.market__item}></div>
               </div>
-              {allAccountPositions &&
+              {allAccountPositions.length &&
                 Object.values(allAccountPositions).map((item, key) => (
                   <div key={item.positionId} className={cl.market__row}>
                     <div className={cl.market__item}>
