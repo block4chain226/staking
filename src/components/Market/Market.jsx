@@ -40,7 +40,10 @@ const Market = () => {
 
   useEffect(() => {
     getAllTokens();
-  }, []);
+    return () => {
+      setAllTokens("");
+    };
+  }, [accounts]);
 
   return (
     <>

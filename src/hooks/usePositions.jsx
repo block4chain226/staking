@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const usePositions = (contract, account, option = "") => {
+const usePositions = (contract = "", account = "") => {
   const [allPositions, setAllPositions] = useState([]);
   const [allIds, setAllIds] = useState("");
   const [tokensTotalMarket, setTokensTotalMarket] = useState([]);
@@ -36,11 +36,15 @@ const usePositions = (contract, account, option = "") => {
   };
 
   useEffect(() => {
-    getAllUserPositionsId();
+    if (account !== "") {
+      getAllUserPositionsId();
+    }
   }, [account]);
 
   useEffect(() => {
-    getAllUserPositions();
+    if (allIds !== "") {
+      getAllUserPositions();
+    }
   }, [allIds]);
 
   useEffect(() => {

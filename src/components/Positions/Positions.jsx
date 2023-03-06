@@ -25,7 +25,7 @@ const Positions = () => {
 
   async function prepareAsset() {
     if (accountPositions) {
-      const vvv = accountPositions.map(async (position) => {
+      accountPositions.map(async (position) => {
         const daysStaked = await contract.calculateNumberDays(
           position.createDate
         );
@@ -49,7 +49,6 @@ const Positions = () => {
 
         setAllAccountPositions((prev) => [...prev, parsedAsset]);
       });
-      console.log(vvv);
     }
   }
 
