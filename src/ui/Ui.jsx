@@ -1,7 +1,7 @@
 import React from "react";
 
 const Ui = () => {
-  return <div>vasa</div>;
+  return <div>vasa new</div>;
 };
 
 export default Ui;
