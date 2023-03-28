@@ -1,0 +1,43 @@
+.market {
+  width: 100%;
+  padding: 5px;
+  background-color: white;
+  border-radius: 20px;
+  .market__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .market__title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    color: blue;
+    font-style: bold;
+    font-size: calc(22px + 0.4vw);
+  }
+  .market__content {
+    display: flex;
+    flex-direction: column;
+  }
+  .market__row {
+    text-align: center;
+    display: flex;
+  }
+  .market__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16.666%;
+    margin-bottom: 10px;
+    button {
+      width: 60px;
+      height: 30px;
+      border-radius: 10px;
+      background-color: teal;
+      border: 2px solid white;
+      color: white;
+    }
+  }
+}

@@ -1,0 +1,25 @@
+.header {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 40px;
+  background-color: #2c2b3d;
+  .header__connect {
+  }
+  button {
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: teal;
+    color: white;
+  }
+  .header__wallet {
+    font-size: 20px;
+    color: white;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
